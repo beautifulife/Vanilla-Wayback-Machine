@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import vanillaCodingLogo from './vanilla_coding.png';
+// import vanillaCodingLogo from './vanilla_coding.png';
 import './App.scss';
 
 export default class App extends Component {
@@ -18,11 +18,18 @@ export default class App extends Component {
   }
 
   render() {
-    const { username } = this.state;
+    const { username, match } = this.state;
+    console.log(match);
+
     return (
       <div>
-        {username ? <h1>{`Hello ${username.toUpperCase()}`}</h1> : <h1>Loading.. please wait!</h1>}
-        <img src={vanillaCodingLogo} alt="Vanilla Coding" />
+        <header className="App__header">
+          <h1 className="App__header__title">Vanilla_Archive</h1>
+        </header>
+        <div className="App__body">
+          <input type="text" />
+        </div>
+        <footer className="App__footer">terms of service</footer>
       </div>
     );
   }

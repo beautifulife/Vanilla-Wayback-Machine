@@ -1,0 +1,17 @@
+.App {
+  width: 100vw;
+  height: 100vh;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    background-color: lightsalmon;
+
+    &__title {
+      font-family: 'Coiny', cursive;
+      font-size: 2rem;
+    }
+  }
+}
