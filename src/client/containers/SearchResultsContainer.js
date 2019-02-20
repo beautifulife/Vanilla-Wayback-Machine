@@ -1,16 +1,14 @@
 import { connect } from 'react-redux';
-import { setChatList } from '../actions';
-import ArchiveLists from '../components/ArchiveLists';
+import SearchResults from '../components/SearchResults';
 
 const mapStateToProps = (state) => {
+  return state;
 };
 
 const mapDispatchToProps = dispatch => ({
-  onInit: () => {
-  }
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ArchiveLists);
+)(SearchResults);

@@ -13,9 +13,19 @@
   "author": "Ken Huh <ken@vanillacoding.co>",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
+    "dotenv": "^6.2.0",
     "express": "^4.16.3",
+    "moment": "^2.24.0",
+    "mongoose": "^5.4.13",
+    "puppeteer": "^1.12.2",
     "react": "^16.5.2",
-    "react-dom": "^16.5.2"
+    "react-dom": "^16.5.2",
+    "react-redux": "^6.0.0",
+    "react-router-dom": "^4.3.1",
+    "react-yearly-calendar": "^1.2.1",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
