@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 // import vanillaCodingLogo from './vanilla_coding.png';
 import './App.scss';
+
+import MainSearchContainer from '../containers/MainSearchContainer';
+import ArchiveListContainer from '../containers/ArchiveListsContainer';
+import ArchiveListsContainer from '../containers/ArchiveListsContainer';
 
 export default class App extends Component {
   constructor(props) {
@@ -18,16 +23,18 @@ export default class App extends Component {
   }
 
   render() {
-    const { username, match } = this.state;
+    const { username } = this.state;
+    const { match } = this.props;
     console.log(match);
 
     return (
-      <div>
+      <div className="App">
         <header className="App__header">
           <h1 className="App__header__title">Vanilla_Archive</h1>
         </header>
         <div className="App__body">
-          <input type="text" />
+          {match && <MainSearchContainer />}
+          {match === 'list' && <ArchiveListsContainer />}
         </div>
         <footer className="App__footer">terms of service</footer>
       </div>

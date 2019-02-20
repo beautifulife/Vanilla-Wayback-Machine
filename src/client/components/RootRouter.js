@@ -8,8 +8,9 @@ const RootRouter = ({ store }) => (
     <Router>
       <Fragment>
         <Switch>
-          <Redirect exact path="/" component={AppContainer} />
-          <Route path="/archives/:url" component={AppContainer} />
+          <Redirect exact from="/" to="/web" />
+          <Route path="/web/:url" component={AppContainer} />
+          <Route exact path="/web" component={AppContainer} />
         </Switch>
       </Fragment>
     </Router>
