@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
 import './MainSearch.scss';
 
-class MainSearch extends Component {
+export default class MainSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,7 +14,6 @@ class MainSearch extends Component {
   }
 
   componentDidMount() {
-    const { onInit } = this.props;
   }
 
   handleChange(ev) {
@@ -47,20 +46,22 @@ class MainSearch extends Component {
 
     return (
       <div className="MainSearch">
-        <form className="MainSearch__search" onSubmit={this.handleSubmit}>
-          <input
-            type="text"
-            value={inputValue}
-            placeholder="Type URL"
-            className="MainSearch__search__text"
-            onChange={this.handleChange}
-            autoFocus
-          />
-          <input type="submit" value="GO" className="MainSearch__search__submit" />
-        </form>
+        <div className="MainSearch__search">
+          <h2 className="MainSearch__search__title">
+            Vanilla_Archive is non-profit library of WWW
+          </h2>
+          <form className="MainSearch__search__form" onSubmit={this.handleSubmit}>
+            <input
+              type="text"
+              value={inputValue}
+              placeholder="Type URL"
+              className="MainSearch__search__form__text"
+              onChange={this.handleChange}
+            />
+            <input type="submit" value="GO" className="MainSearch__search__form__submit" />
+          </form>
+        </div>
       </div>
     );
   }
 }
-
-export default MainSearch;
