@@ -8,21 +8,36 @@ export default class SearchResults extends Component {
     super(props);
     this.state = {
       year: 2019,
-      date: moment()
+      pickedDate: ''
     };
-    this.onChange = this.onChange.bind(this);
+    this.handleCalendarClick = this.handleCalendarClick.bind(this);
+    this.handleModalClick = this.handleModalClick.bind(this);
     this.onPrevYear = this.onPrevYear.bind(this);
     this.onNextYear = this.onNextYear.bind(this);
   }
 
   componentDidMount() {
+    const { onInit, match: { params } } = this.props;
+
+    console.log('여기는 서치리져트', params.url)
+    onInit(params.url);
   }
 
-  onChange(date) {
-    console.log(date);
+  handleCalendarClick(pickedDate) {
+    console.log(pickedDate);
+
     this.setState({
-      date
+      pickedDate
     });
+  }
+
+  handleModalClick(ev) {
+    if (ev.target.classList.contains('SearchResults__modal') ||
+        ev.target.classList.contains('SearchResults__modal__close')) {
+      this.setState({
+        pickedDate: ''
+      });
+    }
   }
 
   onPrevYear(ev) {
@@ -41,40 +56,79 @@ export default class SearchResults extends Component {
     });
   }
 
+  renderDatesOfArchive() {
+    return (
+      <Fragment>
+        <li>
+          {`${moment()}`}
+        </li>
+        <li>
+          {`${moment()}`}
+        </li>
+      </Fragment>
+    );
+  }
+
   render() {
-    const { date, year } = this.state;
-    const { match } = this.props;
-    console.log(match);
+    const { pickedDate, year } = this.state;
+    const { requestUrl, datesOfArchives } = this.props;
+
+    const formattedDates = datesOfArchives.map((archive) => {
+      return moment(archive.date).format('YYYY-MM-DD');
+      // 2018-04-25
+    });
 
     const customCSSclasses = {
-      archives: [
-        '2018-04-25',
-        '2018-05-01',
-        '2018-06-02',
-        '2018-08-15',
-        '2018-11-01'
-      ]
+      datesOfArchives: formattedDates,
     };
 
     return (
       <div className="SearchResults">
         <div className="SearchResults__result">
-          <span>url</span>
-          <span>snapshot</span>
+          <span>{requestUrl}</span>
+          saved
+          <span>{datesOfArchives.length}</span>
+          times
         </div>
         <div className="SearchResults__contents">
-          <CalendarControls
-            year={year}
-            onPrevYear={this.onPrevYear}
-            onNextYear={this.onNextYear}
-          />
-          <Calendar
-            year={year}
-            selectedDay={date}
-            onPickDate={this.onChange}
-            customClasses={customCSSclasses}
-          />,
+          {requestUrl && (datesOfArchives.length ? (
+            <Fragment>
+              <CalendarControls
+                year={year}
+                onPrevYear={this.onPrevYear}
+                onNextYear={this.onNextYear}
+              />
+              <Calendar
+                year={year}
+                selectedDay={pickedDate || moment()}
+                onPickDate={this.handleCalendarClick}
+                customClasses={customCSSclasses}
+              />
+            </Fragment>
+          ) : (
+            <Fragment>
+              <div>
+                <span>
+                  {requestUrl}없어유, 등록하실래유?
+                </span>
+              </div>
+            </Fragment>
+          ))}
+          {!requestUrl && (<div>Loading</div>)}
         </div>
+        {!pickedDate && (
+          <div className="SearchResults__modal" onClick={this.handleModalClick}>
+            <div className="SearchResults__modal__box">
+              <div className="SearchResults__modal__box__title">
+                <span>select archive</span>
+              </div>
+              <ul className="SearchResults__modal__box__list">
+                {this.renderDatesOfArchive()}
+              </ul>
+              <button className="SearchResults__modal__close" type="button" onClick={this.handleModalClick}>&#10005;</button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

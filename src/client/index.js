@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { applyMiddleware, createStore, compose } from 'redux';
+import { Provider } from 'react-redux';
 import logger from 'redux-logger';
 import './index.scss';
 import rootReducer from './reducers';
-import RootRouter from './components/RootRouter';
+import AppContainer from './containers/AppContainer';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -14,6 +15,8 @@ const store = createStore(
 );
 
 ReactDOM.render(
-  <RootRouter store={store} />,
+  <Provider store={store}>
+    <AppContainer />
+  </Provider>,
   document.getElementById('root')
 );

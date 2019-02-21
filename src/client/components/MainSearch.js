@@ -24,12 +24,10 @@ export default class MainSearch extends Component {
 
   handleSubmit(ev) {
     const { inputValue } = this.state;
-    const { onSubmit } = this.props;
 
     ev.preventDefault();
 
     if (inputValue) {
-      onSubmit(inputValue);
       this.setState({
         toWebUrl: true
       });
@@ -40,7 +38,6 @@ export default class MainSearch extends Component {
     const { inputValue, toWebUrl } = this.state;
 
     if (toWebUrl) {
-      console.log(inputValue);
       return <Redirect to={`/web/${inputValue}`} />;
     }
 

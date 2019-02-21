@@ -1,0 +1,5 @@
+export const ADD_DATES_TO_CALENDAR = 'ADD_DATES_TO_CALENDAR';
+export const GET_WEB_PAGE = 'GET_WEB_PAGE';
+export const PICK_DATE = 'PICK_DATE';
+export const CHOOSE_ARCHIVE_DATE = 'CHOOSE_ARCHIVE_DATE';
+export const REGISTER_URL = 'REGISTER_URL';
