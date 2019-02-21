@@ -1,14 +1,17 @@
 import React, { Component, Fragment } from 'react';
-import './SearchResults.scss';
+import { Redirect } from 'react-router-dom';
 import {Calendar, CalendarControls} from 'react-yearly-calendar';
 import moment from 'moment';
+import './SearchResults.scss';
+
 
 export default class SearchResults extends Component {
   constructor(props) {
     super(props);
     this.state = {
       year: 2019,
-      pickedDate: ''
+      pickedDate: '',
+      pickedTime: ''
     };
     this.handleCalendarClick = this.handleCalendarClick.bind(this);
     this.handleModalClick = this.handleModalClick.bind(this);
@@ -19,12 +22,12 @@ export default class SearchResults extends Component {
   componentDidMount() {
     const { onInit, match: { params } } = this.props;
 
-    console.log('여기는 서치리져트', params.url)
+    console.log('여기는 서치리져트', params.url);
     onInit(params.url);
   }
 
   handleCalendarClick(pickedDate) {
-    console.log(pickedDate);
+    console.log(moment(pickedDate).format('YYYY-MM-DD'));
 
     this.setState({
       pickedDate
@@ -38,6 +41,12 @@ export default class SearchResults extends Component {
         pickedDate: ''
       });
     }
+  }
+
+  handleTimeClick(pickedTime) {
+    this.setState({
+      pickedTime
+    });
   }
 
   onPrevYear(ev) {
@@ -56,22 +65,30 @@ export default class SearchResults extends Component {
     });
   }
 
-  renderDatesOfArchive() {
-    return (
-      <Fragment>
-        <li>
-          {`${moment()}`}
-        </li>
-        <li>
-          {`${moment()}`}
-        </li>
-      </Fragment>
-    );
+  renderDatesOfArchive(formattedDates) {
+    const { pickedDate } = this.state;
+    const { datesOfArchives } = this.props;
+
+    return formattedDates.map((date, index) => {
+      const formattedPickDate = moment(pickedDate).format('YYYY-MM-DD');
+      console.log(formattedPickDate, formattedDates);
+
+      if (date === formattedPickDate) {
+        const archiveTime = datesOfArchives[index].date;
+        const formattedArchiveTime = moment(archiveTime).format('lll');
+
+        return (
+          <li key={formattedArchiveTime} onClick={this.handleTimeClick.bind(this, archiveTime)}>
+            {formattedArchiveTime}
+          </li>
+        );
+      }
+    });
   }
 
   render() {
-    const { pickedDate, year } = this.state;
-    const { requestUrl, datesOfArchives } = this.props;
+    const { year, pickedDate, pickedTime } = this.state;
+    const { match: { params }, requestUrl, datesOfArchives } = this.props;
 
     const formattedDates = datesOfArchives.map((archive) => {
       return moment(archive.date).format('YYYY-MM-DD');
@@ -81,6 +98,10 @@ export default class SearchResults extends Component {
     const customCSSclasses = {
       datesOfArchives: formattedDates,
     };
+
+    if (pickedTime) {
+      return <Redirect to={`/web/${params.url}/${pickedTime}`} />;
+    }
 
     return (
       <div className="SearchResults">
@@ -100,7 +121,6 @@ export default class SearchResults extends Component {
               />
               <Calendar
                 year={year}
-                selectedDay={pickedDate || moment()}
                 onPickDate={this.handleCalendarClick}
                 customClasses={customCSSclasses}
               />
@@ -116,14 +136,14 @@ export default class SearchResults extends Component {
           ))}
           {!requestUrl && (<div>Loading</div>)}
         </div>
-        {!pickedDate && (
+        {pickedDate && (
           <div className="SearchResults__modal" onClick={this.handleModalClick}>
             <div className="SearchResults__modal__box">
               <div className="SearchResults__modal__box__title">
-                <span>select archive</span>
+                <span>Select Archive</span>
               </div>
               <ul className="SearchResults__modal__box__list">
-                {this.renderDatesOfArchive()}
+                {this.renderDatesOfArchive(formattedDates)}
               </ul>
               <button className="SearchResults__modal__close" type="button" onClick={this.handleModalClick}>&#10005;</button>
             </div>

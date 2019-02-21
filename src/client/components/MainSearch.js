@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import './MainSearch.scss';
 
@@ -11,9 +11,6 @@ export default class MainSearch extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentDidMount() {
   }
 
   handleChange(ev) {
