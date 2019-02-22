@@ -6,12 +6,10 @@ export const addDatesToCalendar = (requestUrl, datesOfArchives) => ({
   datesOfArchives
 });
 
-export const getWebPage = data => ({
-  type: Types.GET_WEB_PAGE,
-  url: data.url,
-  html: data.html,
-  css: data.css,
-  date: data.date
+export const setWebPage = (requestUrl, pageSource) => ({
+  type: Types.SET_WEB_PAGE,
+  requestUrl,
+  pageSource
 });
 
 export const pickDate = pickedDate => ({
@@ -19,12 +17,16 @@ export const pickDate = pickedDate => ({
   pickedDate
 });
 
+export const resetState = () => ({
+  type: Types.RESET_ALL
+});
+
 export const chooseArchiveDate = choosedDate => ({
   type: Types.CHOOSE_ARCHIVE_DATE,
   choosedDate,
 });
 
-export const registerUrl = url => ({
+export const registerUrl = registerUrl => ({
   type: Types.REGISTER_URL,
-  url
+  registeredUrl
 });

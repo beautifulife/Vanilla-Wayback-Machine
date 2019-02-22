@@ -1,52 +1,62 @@
 import React, { Component, Fragment } from 'react';
-import { Redirect } from 'react-router-dom';
-import {Calendar, CalendarControls} from 'react-yearly-calendar';
+import { withRouter } from 'react-router-dom';
+import { Calendar, CalendarControls } from 'react-yearly-calendar';
 import moment from 'moment';
 import './SearchResults.scss';
 
-
-export default class SearchResults extends Component {
+class SearchResults extends Component {
   constructor(props) {
     super(props);
     this.state = {
       year: 2019,
       pickedDate: '',
-      pickedTime: ''
     };
     this.handleCalendarClick = this.handleCalendarClick.bind(this);
     this.handleModalClick = this.handleModalClick.bind(this);
+    this.handleRegisterClick = this.handleRegisterClick.bind(this);
     this.onPrevYear = this.onPrevYear.bind(this);
     this.onNextYear = this.onNextYear.bind(this);
   }
 
   componentDidMount() {
-    const { onInit, match: { params } } = this.props;
+    const {
+      onInit,
+      match: { params }
+    } = this.props;
 
     console.log('여기는 서치리져트', params.url);
     onInit(params.url);
   }
 
-  handleCalendarClick(pickedDate) {
-    console.log(moment(pickedDate).format('YYYY-MM-DD'));
-
-    this.setState({
-      pickedDate
-    });
+  handleCalendarClick(pickedDate, formattedDates) {
+    if (formattedDates.includes(moment(pickedDate).format('YYYY-MM-DD'))) {
+      this.setState({
+        pickedDate
+      });
+    }
   }
 
   handleModalClick(ev) {
-    if (ev.target.classList.contains('SearchResults__modal') ||
-        ev.target.classList.contains('SearchResults__modal__close')) {
+    if (
+      ev.target.classList.contains('SearchResults__modal') ||
+      ev.target.classList.contains('SearchResults__modal__close')
+    ) {
       this.setState({
         pickedDate: ''
       });
     }
   }
 
+  handleRegisterClick(ev) {
+    const { onRegisterClick, requestUrl } = this.props;
+
+    onRegisterClick(requestUrl);
+  }
+
   handleTimeClick(pickedTime) {
-    this.setState({
-      pickedTime
-    });
+    const { history, match: { params } } = this.props;
+
+    history.push(`/web/${params.url}/${pickedTime}`);
   }
 
   onPrevYear(ev) {
@@ -78,7 +88,10 @@ export default class SearchResults extends Component {
         const formattedArchiveTime = moment(archiveTime).format('lll');
 
         return (
-          <li key={formattedArchiveTime} onClick={this.handleTimeClick.bind(this, archiveTime)}>
+          <li
+            key={formattedArchiveTime}
+            onClick={this.handleTimeClick.bind(this, archiveTime)}
+          >
             {formattedArchiveTime}
           </li>
         );
@@ -87,21 +100,16 @@ export default class SearchResults extends Component {
   }
 
   render() {
-    const { year, pickedDate, pickedTime } = this.state;
-    const { match: { params }, requestUrl, datesOfArchives } = this.props;
+    const { year, pickedDate } = this.state;
+    const { requestUrl, datesOfArchives } = this.props;
 
     const formattedDates = datesOfArchives.map((archive) => {
       return moment(archive.date).format('YYYY-MM-DD');
-      // 2018-04-25
     });
 
     const customCSSclasses = {
-      datesOfArchives: formattedDates,
+      datesOfArchives: formattedDates
     };
-
-    if (pickedTime) {
-      return <Redirect to={`/web/${params.url}/${pickedTime}`} />;
-    }
 
     return (
       <div className="SearchResults">
@@ -112,29 +120,39 @@ export default class SearchResults extends Component {
           times
         </div>
         <div className="SearchResults__contents">
-          {requestUrl && (datesOfArchives.length ? (
-            <Fragment>
-              <CalendarControls
-                year={year}
-                onPrevYear={this.onPrevYear}
-                onNextYear={this.onNextYear}
-              />
-              <Calendar
-                year={year}
-                onPickDate={this.handleCalendarClick}
-                customClasses={customCSSclasses}
-              />
-            </Fragment>
-          ) : (
-            <Fragment>
-              <div>
-                <span>
-                  {requestUrl}없어유, 등록하실래유?
-                </span>
-              </div>
-            </Fragment>
-          ))}
-          {!requestUrl && (<div>Loading</div>)}
+          <h2>Click the date you want </h2>
+          {requestUrl &&
+            (datesOfArchives.length ? (
+              <Fragment>
+                <CalendarControls
+                  year={year}
+                  onPrevYear={this.onPrevYear}
+                  onNextYear={this.onNextYear}
+                />
+                <Calendar
+                  year={year}
+                  onPickDate={ev => this.handleCalendarClick(ev, formattedDates)}
+                  customClasses={customCSSclasses}
+                />
+              </Fragment>
+            ) : (
+              <Fragment>
+                <div className="SearchResults__contents__empty">
+                  <h2 className="SearchResults__contents__empty__title">
+                    There is no archive for&nbsp;
+                    <span>{requestUrl}</span>
+                  </h2>
+                  <span>Do your want to register this page?</span>
+                  <input
+                    type="button"
+                    value="register"
+                    className="SearchResults__contents__empty__register"
+                    onClick={this.handleRegisterClick}
+                  />
+                </div>
+              </Fragment>
+            ))}
+          {!requestUrl && <div>Loading</div>}
         </div>
         {pickedDate && (
           <div className="SearchResults__modal" onClick={this.handleModalClick}>
@@ -145,7 +163,12 @@ export default class SearchResults extends Component {
               <ul className="SearchResults__modal__box__list">
                 {this.renderDatesOfArchive(formattedDates)}
               </ul>
-              <button className="SearchResults__modal__close" type="button" onClick={this.handleModalClick}>&#10005;</button>
+              <input
+                className="SearchResults__modal__close"
+                type="button"
+                value="&#10005;"
+                onClick={this.handleModalClick}
+              />
             </div>
           </div>
         )}
@@ -153,3 +176,5 @@ export default class SearchResults extends Component {
     );
   }
 }
+
+export default withRouter(SearchResults);

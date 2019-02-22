@@ -1,68 +1,135 @@
-const router = require('express').Router();
-const axios = require('axios');
-const mongoose = require('mongoose');
+const express = require('express');
+const Inliner = require('inliner');
 const Archives = require('../models/Archive');
-
+const Pages = require('../models/Page');
 require('dotenv').config();
+const {
+  BadRequestError,
+  NotFoundError,
+  InternalServiceError
+} = require('../lib/error');
 
-const { BadRequestError, NotFoundError, InternalServiceError } = require('../lib/error');
-const { DB_NAME, DB_USER, DB_PASS, DB_HOST } = process.env;
-const mongodbUri = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}`;
+const router = express.Router();
 
-mongoose.connect(mongodbUri, { useNewUrlParser: true });
+router.get('/:url/:moment', (req, res, next) => {
+  const requestUrl = req.params.url;
+  console.log(req.params.url);
 
-const db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-  console.log('success db connect');
-});
-
-router.get('/:url', (req, res, next) => {
-  Archives.find({}, (err, problem) => {
+  Archives.findOne({ url: requestUrl, date: req.params.moment }, (err, archive) => {
     if (err) {
       console.error(err);
+      console.log(err);
 
       return next(new InternalServiceError());
     }
 
-    if (!problem) {
-      return next();
+    console.log(requestUrl, 'url있냐?');
+
+    if (archive) {
+      res.json({
+        status: 'ok',
+        requestUrl,
+        archive
+      });
+    } else {
+      res.json({
+        status: 'empty',
+        requestUrl,
+      });
+    }
+  });
+});
+
+router.get('/:url', (req, res, next) => {
+  const requestUrl = req.params.url;
+  console.log(req.params.url);
+
+  Archives.find({ url: requestUrl }, 'date', (err, datesOfArchives) => {
+    if (err) {
+      console.error(err);
+      console.log(err);
+
+      return next(new InternalServiceError());
     }
 
-    res.render('problem', {
-      title: `Codewars-${problem.title}`,
-      problem
-    });
+    console.log(requestUrl, 'url있냐?');
+
+    if (datesOfArchives.length) {
+      res.json({
+        status: 'ok',
+        action: 'GET',
+        requestUrl,
+        datesOfArchives
+      });
+    } else {
+      res.json({
+        status: 'empty',
+        action: 'GET',
+        requestUrl,
+      });
+    }
   });
 });
 
 router.post('/:url', (req, res, next) => {
-  let requestUrl = req.params.url;
+  const requestUrl = req.params.url;
+  const fullRequestUrl = `https://${requestUrl}`;
+
   console.log(req.params.url);
 
-  if (!requestUrl.match('http')) {
-    requestUrl = `https://${requestUrl}`;
-  }
+  Pages.findOne({ url: requestUrl }, (err, page) => {
+    if (err) {
+      console.error(err);
+    }
 
-  axios.get(requestUrl)
-    .then((res) => {
-      console.log(res);
-      Archives.create(
-        {
-          url: requestUrl,
-          html: res.data
-        },
-        (err, problem) => {
-          if (err) {
-            console.error(err);
+    if (page) {
+      return;
+    }
 
-            return next(new InternalServiceError());
-          }
-        }
-      );
-    })
-    .catch(err => console.log(err));
+    Pages.create({ url: requestUrl }, (err, page) => {
+      if (err) {
+        console.error(err);
+
+        return next(new InternalServiceError());
+      }
+    });
+  });
+
+  const inlinerOption = {
+    images: true,
+    compressCSS: true,
+    compressJS: true,
+    collapseWhitespace: true,
+    nosvg: false,
+    skipAbsoluteUrls: true,
+    preserveComments: false,
+    iesafe: false,
+  };
+
+  new Inliner(fullRequestUrl, inlinerOption,(err, html) => {
+    if (err) {
+      console.error(err);
+    }
+    console.log(html);
+
+    Archives.create({ url: requestUrl, html }, (err, archive) => {
+      if (err) {
+        console.error(err);
+
+        return next(new InternalServiceError());
+      }
+
+      res.json({
+        status: 'ok',
+        action: 'POST',
+        registeredUrl: requestUrl
+      });
+    });
+  });
+
+  // const getPageData = async (urlToFetch) => {
+  //   const browser = await puppeteer.launch({headless: false});
+  //   const page = await browser.newPage();
 });
 
 module.exports = router;

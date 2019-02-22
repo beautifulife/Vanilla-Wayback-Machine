@@ -2,7 +2,8 @@ import * as Types from '../actions/actionTypes';
 
 const initialState = {
   requestUrl: '',
-  datesOfArchives: []
+  datesOfArchives: [],
+  pageSource: ''
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -18,7 +19,10 @@ const rootReducer = (state = initialState, action) => {
 
     return newState;
 
-  case Types.GET_WEB_PAGE:
+  case Types.SET_WEB_PAGE:
+    newState.requestUrl = action.requestUrl;
+    newState.pageSource = action.pageSource;
+
     return newState;
 
   case Types.PICK_DATE:
@@ -26,10 +30,15 @@ const rootReducer = (state = initialState, action) => {
 
     return newState;
 
+  case Types.RESET_ALL:
+    return initialState;
+
   case Types.CHOOSE_ARCHIVE_DATE:
     return newState;
 
   case Types.REGISTER_URL:
+    newState.registeredUrl = action.registeredUrl;
+
     return newState;
 
   default:

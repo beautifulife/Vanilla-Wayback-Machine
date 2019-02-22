@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import SearchResults from '../components/SearchResults';
-import { addDatesToCalendar } from '../actions';
+import { addDatesToCalendar, registerUrl } from '../actions';
 
 const mapStateToProps = (state) => {
   console.log(state);
@@ -28,7 +28,16 @@ const mapDispatchToProps = dispatch => ({
       })
       .catch(err => console.log(err));
   },
-  onClickDate: (pickedDate) => {
+  onRegisterClick: (url) => {
+    fetch(`/api/archives/${url}`, {
+      method: 'post',
+    })
+      .then(res => res.json())
+      .then((res) => {
+        if (res.status === 'ok') {
+          dispatch((registerUrl(res.registeredUrl)));
+        }
+      });
   }
 });
 
