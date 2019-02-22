@@ -18,7 +18,7 @@ const mapDispatchToProps = dispatch => ({
       .then(res => res.json())
       .then((res) => {
         console.log(res);
-        if (res.status === 'ok') {
+        if (res.message === 'ok') {
           dispatch(setWebPage(res.requestUrl, res.archive.html));
         } else {
           console.log('데이터 안왔나벼');

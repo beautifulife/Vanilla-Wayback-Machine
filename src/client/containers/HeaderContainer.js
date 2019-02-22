@@ -1,34 +1,25 @@
 import { connect } from 'react-redux';
-import SearchResults from '../components/SearchResults';
+import Header from '../components/Header';
 import {
-  registerUrl,
+  resetAll,
   searchArchivedUrl,
   searchInitialUrl,
   searchInvalidUrl
 } from '../actions';
 
 const mapStateToProps = (state) => {
-  const {
-    archivedDate,
-    datesOfArchives,
-    isValidUrl,
-    registeredUrl,
-    requestUrl,
-    searchUrl
-  } = state;
+  const { requestUrl } = state;
 
   return {
-    archivedDate,
-    datesOfArchives,
-    isValidUrl,
-    registeredUrl,
-    requestUrl,
-    searchUrl
+    requestUrl
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  onInit: (searchUrl) => {
+  onLinkClick: () => {
+    dispatch(resetAll());
+  },
+  onSubmit: (searchUrl) => {
     console.log(searchUrl);
     fetch(`/api/archives/${searchUrl}`)
       .then(res => res.json())
@@ -43,21 +34,10 @@ const mapDispatchToProps = dispatch => ({
         }
       })
       .catch(err => console.log(err));
-  },
-  onRegisterClick: (url) => {
-    fetch(`/api/archives/${url}`, {
-      method: 'post'
-    })
-      .then(res => res.json())
-      .then((res) => {
-        if (res.message === 'ok') {
-          dispatch((registerUrl(res.archivedDate, res.registeredUrl)));
-        }
-      });
   }
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SearchResults);
+)(Header);
