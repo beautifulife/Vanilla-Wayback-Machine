@@ -55,6 +55,10 @@ router.get('/:url', (req, res, next) => {
     console.log(requestUrl, 'url있냐?');
 
     if (datesOfArchives.length) {
+      datesOfArchives = datesOfArchives.map((archive) => {
+        return archive.date;
+      });
+
       res.json({
         status: 'ok',
         action: 'GET',

@@ -3,11 +3,12 @@ import Archive from '../components/Archive';
 import { setWebPage } from '../actions';
 
 const mapStateToProps = (state) => {
-  const { requestUrl, pageSource } = state;
+  const { datesOfArchives, pageSource, requestUrl } = state;
 
   return {
-    requestUrl,
-    pageSource
+    datesOfArchives,
+    pageSource,
+    requestUrl
   };
 };
 
