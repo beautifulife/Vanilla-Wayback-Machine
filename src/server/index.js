@@ -1,17 +1,27 @@
 const express = require('express');
-const os = require('os');
+const mongoose = require('mongoose');
+require('./lib/scheduler');
 
 const app = express();
 const { BadRequestError } = require('./lib/error');
 
-app.use(express.static('dist'));
-
 const archives = require('./routes/archives');
 
+const { DB_NAME, DB_USER, DB_PASS, DB_HOST } = process.env;
+const mongodbUri = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}`;
 
-app.use('/archives', archives);
+mongoose.connect(mongodbUri, { useNewUrlParser: true });
 
-app.get('/api/v1/username', (req, res) => res.send({ username: os.userInfo().username }));
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+  console.log('success db connect');
+});
+
+app.use(express.static('dist'));
+
+app.use('/api/archives', archives);
 
 app.use((req, res, next) => {
   next(new BadRequestError());
@@ -22,7 +32,7 @@ app.use((err, req, res, next) => {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   res.status(err.status || 500);
-  res.send('error');
+  res.send();
 });
 
 app.listen(8080, () => console.log('Listening on port 8080!'));

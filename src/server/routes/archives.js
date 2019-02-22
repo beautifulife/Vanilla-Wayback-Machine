@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const Inliner = require('inliner');
 const Archives = require('../models/Archive');
 const Pages = require('../models/Page');
@@ -42,6 +43,7 @@ router.get('/:url/:moment', (req, res, next) => {
 
 router.get('/:url', (req, res, next) => {
   const requestUrl = req.params.url;
+  const fullRequestUrl = `https://${requestUrl}`;
   console.log(req.params.url);
 
   Archives.find({ url: requestUrl }, 'date', (err, datesOfArchives) => {
@@ -66,11 +68,24 @@ router.get('/:url', (req, res, next) => {
         datesOfArchives
       });
     } else {
-      res.json({
-        status: 'empty',
-        action: 'GET',
-        requestUrl,
-      });
+      console.log('이제 테스트를 날리겠다', fullRequestUrl);
+      axios(fullRequestUrl)
+        .then((response) => {
+          console.log(response);
+          res.json({
+            status: 'empty',
+            action: 'GET',
+            requestUrl,
+          });
+        })
+        .catch((err) => {
+          console.log('역시없지?');
+          res.json({
+            status: 'error',
+            action: 'GET',
+            requestUrl
+          });
+        });
     }
   });
 });
@@ -112,9 +127,12 @@ router.post('/:url', (req, res, next) => {
 
   new Inliner(fullRequestUrl, inlinerOption,(err, html) => {
     if (err) {
-      console.error(err);
+      return console.error(err);
     }
-    console.log(html);
+
+    if (!html) {
+      return console.error('empty html injected');
+    }
 
     Archives.create({ url: requestUrl, html }, (err, archive) => {
       if (err) {
