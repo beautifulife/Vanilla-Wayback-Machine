@@ -14,47 +14,54 @@ const router = express.Router();
 
 router.get('/:url/:moment', (req, res, next) => {
   const requestUrl = req.params.url;
-  console.log(req.params.url);
 
-  Archives.findOne({ url: requestUrl, date: req.params.moment }, (err, archive) => {
-    if (err) {
-      console.error(err);
-      console.log(err);
+  if (isNaN(Date.parse(req.params.moment))) {
+    console.error(`unexpected moment:${req.params.moment} injected`);
 
-      return next(new InternalServiceError());
-    }
+    return next(new BadRequestError());
+  }
 
-    console.log(requestUrl, 'url있냐?');
+  try {
+    Archives.findOne(
+      { url: requestUrl, date: req.params.moment },
+      (err, archive) => {
+        if (err) {
+          console.error(err);
 
-    if (archive) {
-      res.json({
-        status: 'ok',
-        requestUrl,
-        archive
-      });
-    } else {
-      res.json({
-        status: 'empty',
-        requestUrl,
-      });
-    }
-  });
+          return next(new InternalServiceError());
+        }
+
+        if (archive) {
+          res.json({
+            message: 'ok',
+            requestUrl,
+            archive
+          });
+        } else {
+          res.json({
+            message: 'empty',
+            requestUrl
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.err(err);
+
+    next(new InternalServiceError());
+  }
 });
 
 router.get('/:url', (req, res, next) => {
   const requestUrl = req.params.url;
   const fullRequestUrl = `https://${requestUrl}`;
-  console.log(req.params.url);
 
   Archives.find({ url: requestUrl }, 'date', (err, datesOfArchives) => {
     if (err) {
       console.error(err);
-      console.log(err);
 
       return next(new InternalServiceError());
     }
-
-    console.log(requestUrl, 'url있냐?');
 
     if (datesOfArchives.length) {
       datesOfArchives = datesOfArchives.map((archive) => {
@@ -62,26 +69,23 @@ router.get('/:url', (req, res, next) => {
       });
 
       res.json({
-        status: 'ok',
+        message: 'ok',
         action: 'GET',
         requestUrl,
         datesOfArchives
       });
     } else {
-      console.log('이제 테스트를 날리겠다', fullRequestUrl);
       axios(fullRequestUrl)
         .then((response) => {
-          console.log(response);
           res.json({
-            status: 'empty',
+            message: 'empty',
             action: 'GET',
-            requestUrl,
+            requestUrl
           });
         })
         .catch((err) => {
-          console.log('역시없지?');
           res.json({
-            status: 'error',
+            message: 'error',
             action: 'GET',
             requestUrl
           });
@@ -94,11 +98,11 @@ router.post('/:url', (req, res, next) => {
   const requestUrl = req.params.url;
   const fullRequestUrl = `https://${requestUrl}`;
 
-  console.log(req.params.url);
-
   Pages.findOne({ url: requestUrl }, (err, page) => {
     if (err) {
       console.error(err);
+
+      return next(new InternalServiceError());
     }
 
     if (page) {
@@ -122,12 +126,14 @@ router.post('/:url', (req, res, next) => {
     nosvg: false,
     skipAbsoluteUrls: true,
     preserveComments: false,
-    iesafe: false,
+    iesafe: false
   };
 
-  new Inliner(fullRequestUrl, inlinerOption,(err, html) => {
+  new Inliner(fullRequestUrl, inlinerOption, (err, html) => {
     if (err) {
-      return console.error(err);
+      console.error(err);
+
+      return next(new InternalServiceError());
     }
 
     if (!html) {
@@ -142,16 +148,13 @@ router.post('/:url', (req, res, next) => {
       }
 
       res.json({
-        status: 'ok',
+        message: 'ok',
         action: 'POST',
+        archivedDate: archive.date,
         registeredUrl: requestUrl
       });
     });
   });
-
-  // const getPageData = async (urlToFetch) => {
-  //   const browser = await puppeteer.launch({headless: false});
-  //   const page = await browser.newPage();
 });
 
 module.exports = router;

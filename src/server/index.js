@@ -1,12 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 require('./lib/scheduler');
-
-const app = express();
 const { BadRequestError } = require('./lib/error');
-
 const archives = require('./routes/archives');
 
+const app = express();
 const { DB_NAME, DB_USER, DB_PASS, DB_HOST } = process.env;
 const mongodbUri = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}`;
 
@@ -32,7 +30,9 @@ app.use((err, req, res, next) => {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   res.status(err.status || 500);
-  res.send();
+  res.json({
+    message: err.message
+  });
 });
 
 app.listen(8080, () => console.log('Listening on port 8080!'));
