@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   padding: 15px;
+  background-color: rgba(255, 255, 255, 0.9);
 
   &__result {
     text-align: center;
@@ -17,6 +18,10 @@
         margin: 0 10px;
         font-weight: bold;
         color: black;
+
+        &:first-of-type {
+          margin-left: 0;
+        }
       }
     }
   }
@@ -29,22 +34,35 @@
     overflow: auto;
     height: 100%;
     padding: 20px;
+    font-size: 1.2rem;
 
-    &__empty {
+    &__table {
+      background-color: white;
+    }
+
+    &__empty,
+    &__invalid {
+      text-align: center;
+
       &__title {
-        font-size: 1.2rem;
+        margin-top: 30px;
+        margin-bottom: 0;
+        text-align: center;
 
         span {
+          display: inline-block;
+          margin-top: 15px;
           font-weight: bold;
           color: black;
         }
       }
 
       &__register {
-        margin-left: 30px;
-        padding: 5px 10px;
-        box-shadow: 1px 3px 20px lightgray;
+        padding: 8px 15px;
+        box-shadow: 1px 3px 10px lightgray;
         border-radius: 15px;
+        font-size: 1rem;
+        background-color: rgb(250, 250, 250);
         transition: all 0.2s;
         cursor: pointer;
 
@@ -58,6 +76,11 @@
           box-shadow: 1px 1px 20px lightgray;
         }
       }
+    }
+
+    &__loading {
+      margin-top: 20px;
+      font-size: 1.5rem;
     }
   }
 
@@ -110,133 +133,118 @@
   }
 }
 
-td.datesOfArchives {
-  color: white;
-  background-color: red;
-  cursor: pointer;
-}
-
-table.calendar {
+.calendar {
   border-collapse: collapse;
   font-size: 0.9rem;
-}
 
-table.calendar thead {
-  background-color: #5a5a5a;
-  color: white;
-  margin-bottom: 3px;
-  border-bottom: 2px solid white;
-}
+  thead {
+    background-color: #5a5a5a;
+    color: white;
+    margin-bottom: 3px;
+    border-bottom: 2px solid white;
 
-table.calendar thead th {
-  font-weight: normal;
-  padding: 10px 3px;
-}
+    th {
+      font-weight: normal;
+      padding: 10px 3px;
 
-table.calendar thead th.bolder {
-  font-weight: bold;
-}
+      .bolder {
+        font-weight: bold;
+      }
+    }
+  }
 
-table.calendar tbody {
-  font-size: 0.8em;
-}
+  tbody {
+    font-size: 0.8em;
 
-table.calendar td {
-  text-align: center;
-  padding: 5px;
-  border: 1px solid rgba(185, 185, 185, 0.13);
-  min-width: 15px;
-  transition: all 0.2s;
+    tr {
+      td {
+        text-align: center;
+        padding: 5px;
+        border: 1px solid rgba(185, 185, 185, 0.13);
+        min-width: 15px;
+        background-color: rgb(250, 250, 250);
+        transition: all 0.2s;
+        cursor: default;
 
-  &:hover {
-    box-shadow: 0px 0px 10px gray;
+        &:hover {
+          box-shadow: 0px 0px 10px gray;
+        }
+
+        &.datesOfArchives {
+          color: white;
+          background-color: red;
+          cursor: pointer;
+        }
+
+        &.month-name {
+          font-weight: bold;
+          text-align: left;
+          cursor: default;
+          border-left: none;
+        }
+
+        &.prev-month,
+        &.next-month {
+          color: transparent;
+          background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAABZJREFUCB1jYEADmzdv/o8iRA0BoIEAKngPeSAlnXcAAAAASUVORK5CYII=');
+          pointer-events: none;
+          cursor: default;
+        }
+
+        &.week-separator {
+          pointer-events: none;
+          padding: 0;
+          width: 8px;
+          min-width: 0;
+          background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAABZJREFUCB1jYEADmzdv/o8iRA0BoIEAKngPeSAlnXcAAAAASUVORK5CYII=');
+        }
+
+        &.bolder {
+          font-weight: bold;
+        }
+      }
+
+      &:last-child {
+        td {
+          border-bottom: none;
+        }
+      }
+    }
   }
 }
 
-table.calendar tr:last-child td {
-  border-bottom: none;
-}
-
-table.calendar td.month-name {
-  font-weight: bold;
-  text-align: left;
-  cursor: default;
-  border-left: none;
-}
-
-table.calendar td.prev-month,
-table.calendar td.next-month {
-  color: transparent;
-  cursor: default;
-  pointer-events: none;
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAABZJREFUCB1jYEADmzdv/o8iRA0BoIEAKngPeSAlnXcAAAAASUVORK5CYII=');
-}
-
-table.calendar td.week-separator {
-  pointer-events: none;
-  padding: 0;
-  width: 8px;
-  min-width: 0;
-  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAABZJREFUCB1jYEADmzdv/o8iRA0BoIEAKngPeSAlnXcAAAAASUVORK5CYII=');
-}
-
-table.calendar td.bolder {
-  font-weight: bold;
-}
-
-/* Selected range */
-table.calendar td.range {
-  background-color: rgba(255, 69, 0, 0.7);
-  font-weight: bold;
-  color: white;
-}
-
-table.calendar td.range-left {
-  border-top-left-radius: 15px;
-  border-bottom-left-radius: 15px;
-  overflow: hidden;
-  background: orangered;
-}
-
-table.calendar td.range-right {
-  border-top-right-radius: 15px;
-  border-bottom-right-radius: 15px;
-  overflow: hidden;
-  background: orangered;
-}
-
-div.calendar-controls {
+.calendar-controls {
   margin: 10px auto;
   margin-top: 0;
   padding: 10px;
   display: table;
   font-size: 25px;
   line-height: 35px;
-}
 
-div.calendar-controls div {
-  display: inline;
-}
-
-div.calendar-controls .current-year {
-  margin: 0 30px;
-}
-
-div.calendar-controls .control {
-  font-weight: bolder;
-  color: #323232;
-  font-size: 1em;
-  cursor: pointer;
-
-  &:hover {
-    color: red;
+  div {
+    display: inline;
   }
-}
 
-div.calendar-controls .today {
-  position: absolute;
-  right: 15px;
-  line-height: 35px;
-  font-size: 0.6em;
-  text-transform: uppercase;
+  .current-year {
+    margin: 0 30px;
+  }
+
+  .control {
+    font-weight: bolder;
+    color: #323232;
+    font-size: 1.2em;
+    cursor: pointer;
+
+    &:hover {
+      color: red;
+    }
+  }
+
+  .today {
+    position: absolute;
+    right: 15px;
+    line-height: 35px;
+    font-size: 0.6em;
+    text-transform: uppercase;
+  }
 }

@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import './MainSearch.scss';
 
-export default class MainSearch extends Component {
+class MainSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputValue: '',
-      toWebUrl: false,
+      inputValue: ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  parseUrl(url) {
+    const parser = document.createElement('a');
+
+    parser.href = url;
+
+    return parser.hostname;
   }
 
   handleChange(ev) {
@@ -21,41 +28,45 @@ export default class MainSearch extends Component {
 
   handleSubmit(ev) {
     const { inputValue } = this.state;
+    const { history } = this.props;
 
     ev.preventDefault();
 
     if (inputValue) {
-      this.setState({
-        toWebUrl: true
-      });
+      const parsedUrl = this.parseUrl(inputValue);
+
+      history.push(`/web/${parsedUrl}`);
     }
   }
 
   render() {
-    const { inputValue, toWebUrl } = this.state;
-
-    if (toWebUrl) {
-      return <Redirect to={`/web/${inputValue}`} />;
-    }
+    const { inputValue } = this.state;
 
     return (
       <div className="MainSearch">
         <div className="MainSearch__search">
-          <h2 className="MainSearch__search__title">
-            Vanilla_Archive is non-profit library of WWW
-          </h2>
-          <form className="MainSearch__search__form" onSubmit={this.handleSubmit}>
+          <form
+            className="MainSearch__search__form"
+            onSubmit={this.handleSubmit}
+          >
             <input
               type="text"
               value={inputValue}
-              placeholder="Type URL"
+              placeholder="https://example.com"
+              pattern="(https|http)://.*"
               className="MainSearch__search__form__text"
               onChange={this.handleChange}
             />
-            <input type="submit" value="GO" className="MainSearch__search__form__submit" />
+            <input
+              type="submit"
+              value="GO"
+              className="MainSearch__search__form__submit"
+            />
           </form>
         </div>
       </div>
     );
   }
 }
+
+export default withRouter(MainSearch);

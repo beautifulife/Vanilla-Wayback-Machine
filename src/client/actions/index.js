@@ -5,6 +5,12 @@ export const initLoader = () => ({
   loading: true
 });
 
+export const loadPageSource = (requestUrl, pageSource) => ({
+  type: Types.LOAD_PAGE_SOURCE,
+  requestUrl,
+  pageSource
+});
+
 export const pickDate = pickedDate => ({
   type: Types.PICK_DATE,
   pickedDate
@@ -38,12 +44,6 @@ export const searchInvalidUrl = requestUrl => ({
   type: Types.SEARCH_INVALID_URL,
   requestUrl,
   isValidUrl: false
-});
-
-export const setWebPage = (requestUrl, pageSource) => ({
-  type: Types.SET_WEB_PAGE,
-  requestUrl,
-  pageSource
 });
 
 export const terminateLoader = () => ({

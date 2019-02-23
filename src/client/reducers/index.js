@@ -3,6 +3,7 @@ import * as Types from '../actions/actionTypes';
 const initialState = {
   datesOfArchives: [],
   isValidUrl: true,
+  loading: false,
   pageSource: '',
   requestUrl: ''
 };
@@ -11,6 +12,17 @@ const rootReducer = (state = initialState, action) => {
   const newState = JSON.parse(JSON.stringify(state));
 
   switch (action.type) {
+  case Types.INIT_LOADER:
+    newState.loading = action.loading;
+
+    return newState;
+
+  case Types.LOAD_PAGE_SOURCE:
+    newState.pageSource = action.pageSource;
+    newState.requestUrl = action.requestUrl;
+
+    return newState;
+
   case Types.PICK_DATE:
     newState.pickedDate = action.pickedDate;
 
@@ -43,9 +55,8 @@ const rootReducer = (state = initialState, action) => {
 
     return newState;
 
-  case Types.SET_WEB_PAGE:
-    newState.pageSource = action.pageSource;
-    newState.requestUrl = action.requestUrl;
+  case Types.TERMINATE_LOADER:
+    newState.loading = action.loading;
 
     return newState;
 

@@ -5,7 +5,7 @@ import {
   searchArchivedUrl,
   searchInitialUrl,
   searchInvalidUrl,
-  setWebPage,
+  loadPageSource,
   terminateLoader
 } from '../actions';
 
@@ -45,7 +45,7 @@ const mapDispatchToProps = dispatch => ({
       .then((res) => {
         console.log(res);
         if (res.message === 'ok') {
-          dispatch(setWebPage(res.requestUrl, res.archive.html));
+          dispatch(loadPageSource(res.requestUrl, res.archive.html));
         }
       })
       .catch(err => console.log(err));

@@ -1,3 +1,68 @@
 .Archive {
+  position: relative;
+  width: 100%;
   height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+
+  &__controller {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50px);
+    width: 500px;
+    height: 50px;
+    border-radius: 0 0 15px 15px;
+    background-color: rgb(250, 250, 250);
+    transition: all 0.2s;
+
+    &:hover {
+      transform: translateX(-50%);
+      box-shadow: 0 5px 10px rgb(165, 165, 165);
+    }
+
+    &__title {
+      margin-right: 25px;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    &__date {
+      margin: 0 5px;
+    }
+
+    &__previous,
+    &__next {
+      font-size: 1.2rem;
+      color: rgb(233, 233, 233);
+
+      &:first-of-type {
+        transform: rotate(180deg) translateY(-2px);
+      }
+
+      &.active {
+        color: rgb(63, 62, 62);
+        cursor: pointer;
+      }
+    }
+
+    &__info {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      padding: 0px 50px;
+      transform: translateX(-50%);
+      border-radius: 0 0 10px 10px;
+      font-size: 0.8rem;
+      color: white;
+      background-color: rgb(97, 97, 97);
+    }
+  }
+
+  &__iframe {
+    width: 100%;
+    height: 100%;
+  }
 }

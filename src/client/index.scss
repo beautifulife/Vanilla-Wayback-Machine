@@ -2,25 +2,35 @@
 
 html,
 body {
+  overflow: hidden;
+  vertical-align: baseline;
   margin: 0;
   padding: 0;
   border: 0;
+  box-sizing: border-box;
   font-family: 'Lato', sans-serif;
   font-size: 100%;
   color: rgba(0, 0, 0, 0.7);
-  vertical-align: baseline;
+}
+
+body {
+  overflow: auto;
 }
 
 * {
   font: inherit;
+  box-sizing: inherit;
 }
 
 ol,
 ul {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 a,
-input {
+input,
+button {
   all: unset;
 }

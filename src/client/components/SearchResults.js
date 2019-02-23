@@ -175,7 +175,7 @@ class SearchResults extends Component {
                       <br />
                       <span>{registeredUrl}</span>
                     </h2>
-                    <p>Go to the page we just saved, after 5 seconds...</p>
+                    <p>Go to the page we just saved, after 3 seconds...</p>
                   </Fragment>
                 )}
               </div>
