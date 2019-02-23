@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Calendar, CalendarControls } from 'react-yearly-calendar';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import './SearchResults.scss';
 import Loader from './Loader';
@@ -214,5 +215,18 @@ class SearchResults extends Component {
     );
   }
 }
+
+SearchResults.propTypes = {
+  match: PropTypes.instanceOf(Object).isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
+  archivedDate: PropTypes.string.isRequired,
+  datesOfArchives: PropTypes.instanceOf(Array).isRequired,
+  isValidUrl: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  onInit: PropTypes.func.isRequired,
+  onRegisterClick: PropTypes.func.isRequired,
+  registeredUrl: PropTypes.string.isRequired,
+  requestUrl: PropTypes.string.isRequired
+};
 
 export default withRouter(SearchResults);

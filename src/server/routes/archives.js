@@ -49,7 +49,7 @@ router.get('/:url/:moment', (req, res, next) => {
       }
     );
   } catch (err) {
-    console.err(err);
+    console.error(err);
 
     next(new InternalServiceError());
   }

@@ -1,3 +1,4 @@
+export const INITIALIZE_PAGE_SOURCE = 'INITIALIZE_PAGE_SOURCE';
 export const INIT_LOADER = 'INIT_LOADER';
 export const LOAD_PAGE_SOURCE = 'LOAD_PAGE_SOURCE';
 export const PICK_DATE = 'PICK_DATE';

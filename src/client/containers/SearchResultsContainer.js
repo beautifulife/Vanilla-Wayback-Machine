@@ -38,7 +38,6 @@ const mapDispatchToProps = dispatch => ({
     fetch(`/api/archives/${searchUrl}`)
       .then(res => res.json())
       .then((res) => {
-        console.log(res);
         if (res.message === 'ok') {
           dispatch(searchArchivedUrl(res.requestUrl, res.datesOfArchives));
         } else if (res.message === 'empty') {
@@ -51,7 +50,6 @@ const mapDispatchToProps = dispatch => ({
       })
       .catch((err) => {
         console.error(err);
-
         dispatch(terminateLoader());
       });
   },
@@ -71,7 +69,6 @@ const mapDispatchToProps = dispatch => ({
       })
       .catch((err) => {
         console.error(err);
-
         dispatch(terminateLoader());
       });
   }

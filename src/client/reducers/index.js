@@ -1,10 +1,12 @@
 import * as Types from '../actions/actionTypes';
 
 const initialState = {
+  archivedDate: '',
   datesOfArchives: [],
   isValidUrl: true,
   loading: false,
   pageSource: '',
+  registeredUrl: '',
   requestUrl: ''
 };
 
@@ -12,6 +14,11 @@ const rootReducer = (state = initialState, action) => {
   const newState = JSON.parse(JSON.stringify(state));
 
   switch (action.type) {
+  case Types.INITIALIZE_PAGE_SOURCE:
+    newState.pageSource = action.pageSource;
+
+    return newState;
+
   case Types.INIT_LOADER:
     newState.loading = action.loading;
 

@@ -14,8 +14,8 @@ const mapStateToProps = (state) => {
 
   return {
     datesOfArchives,
-    pageSource,
     loading,
+    pageSource,
     requestUrl
   };
 };
@@ -27,7 +27,6 @@ const mapDispatchToProps = dispatch => ({
     fetch(`/api/archives/${searchUrl}`)
       .then(res => res.json())
       .then((res) => {
-        console.log(res);
         if (res.message === 'ok') {
           dispatch(searchArchivedUrl(res.requestUrl, res.datesOfArchives));
         } else if (res.message === 'empty') {
@@ -38,17 +37,16 @@ const mapDispatchToProps = dispatch => ({
 
         dispatch(terminateLoader());
       })
-      .catch(err => console.log(err));
+      .catch(err => console.error(err));
 
     fetch(`/api/archives/${searchUrl}/${moment}`)
       .then(res => res.json())
       .then((res) => {
-        console.log(res);
         if (res.message === 'ok') {
           dispatch(loadPageSource(res.requestUrl, res.archive.html));
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => console.error(err));
   }
 });
 

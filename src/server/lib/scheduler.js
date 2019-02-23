@@ -9,8 +9,6 @@ rule.dayOfWeek = 1;
 rule.hour = 10;
 
 const job = schedule.scheduleJob(rule, () => {
-  console.log('weekly job start');
-
   try {
     Pages.find({}, 'url', (err, pages) => {
       if (err) {
@@ -27,8 +25,6 @@ const job = schedule.scheduleJob(rule, () => {
               console.error(err);
             }
 
-            console.log(`page ${requestUrl} scraped`);
-
             Archives.create(
               {
                 url: requestUrl,
@@ -38,8 +34,6 @@ const job = schedule.scheduleJob(rule, () => {
                 if (err) {
                   console.error(err);
                 }
-
-                console.log(`${index}. page ${requestUrl} saved`);
               }
             );
           });
@@ -49,7 +43,7 @@ const job = schedule.scheduleJob(rule, () => {
       });
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 });
 

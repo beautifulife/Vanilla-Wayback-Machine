@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import './Archive.scss';
 import Loader from './Loader';
@@ -76,5 +77,15 @@ class Archive extends Component {
     );
   }
 }
+
+Archive.propTypes = {
+  match: PropTypes.instanceOf(Object).isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
+  datesOfArchives: PropTypes.instanceOf(Array).isRequired,
+  loading: PropTypes.bool.isRequired,
+  onInit: PropTypes.func.isRequired,
+  pageSource: PropTypes.string.isRequired,
+  requestUrl: PropTypes.string.isRequired
+};
 
 export default withRouter(Archive);

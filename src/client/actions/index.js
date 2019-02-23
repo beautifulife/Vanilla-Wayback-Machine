@@ -1,5 +1,10 @@
 import * as Types from './actionTypes';
 
+export const initializePageSource = () => ({
+  type: Types.INITIALIZE_PAGE_SOURCE,
+  pageSource: ''
+});
+
 export const initLoader = () => ({
   type: Types.INIT_LOADER,
   loading: true

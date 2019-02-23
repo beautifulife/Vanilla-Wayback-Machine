@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import './MainSearch.scss';
 
 class MainSearch extends Component {
@@ -68,5 +69,9 @@ class MainSearch extends Component {
     );
   }
 }
+
+MainSearch.propTypes = {
+  history: PropTypes.instanceOf(Object).isRequired
+};
 
 export default withRouter(MainSearch);

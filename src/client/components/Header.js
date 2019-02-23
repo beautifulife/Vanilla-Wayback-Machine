@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import './Header.scss';
 
 class Header extends Component {
@@ -89,5 +90,12 @@ class Header extends Component {
     );
   }
 }
+
+Header.propTypes = {
+  history: PropTypes.instanceOf(Object).isRequired,
+  onLinkClick: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  requestUrl: PropTypes.string.isRequired
+};
 
 export default withRouter(Header);
