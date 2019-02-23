@@ -1,10 +1,12 @@
 import { connect } from 'react-redux';
 import SearchResults from '../components/SearchResults';
 import {
+  initLoader,
   registerUrl,
   searchArchivedUrl,
   searchInitialUrl,
-  searchInvalidUrl
+  searchInvalidUrl,
+  terminateLoader
 } from '../actions';
 
 const mapStateToProps = (state) => {
@@ -12,6 +14,7 @@ const mapStateToProps = (state) => {
     archivedDate,
     datesOfArchives,
     isValidUrl,
+    loading,
     registeredUrl,
     requestUrl,
     searchUrl
@@ -21,6 +24,7 @@ const mapStateToProps = (state) => {
     archivedDate,
     datesOfArchives,
     isValidUrl,
+    loading,
     registeredUrl,
     requestUrl,
     searchUrl
@@ -29,7 +33,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => ({
   onInit: (searchUrl) => {
-    console.log(searchUrl);
+    dispatch(initLoader());
+
     fetch(`/api/archives/${searchUrl}`)
       .then(res => res.json())
       .then((res) => {
@@ -41,10 +46,18 @@ const mapDispatchToProps = dispatch => ({
         } else {
           dispatch(searchInvalidUrl(res.requestUrl));
         }
+
+        dispatch(terminateLoader());
       })
-      .catch(err => console.log(err));
+      .catch((err) => {
+        console.error(err);
+
+        dispatch(terminateLoader());
+      });
   },
   onRegisterClick: (url) => {
+    dispatch(initLoader());
+    
     fetch(`/api/archives/${url}`, {
       method: 'post'
     })
@@ -53,6 +66,13 @@ const mapDispatchToProps = dispatch => ({
         if (res.message === 'ok') {
           dispatch((registerUrl(res.archivedDate, res.registeredUrl)));
         }
+
+        dispatch(terminateLoader());
+      })
+      .catch((err) => {
+        console.error(err);
+
+        dispatch(terminateLoader());
       });
   }
 });

@@ -3,13 +3,14 @@ import { withRouter } from 'react-router-dom';
 import { Calendar, CalendarControls } from 'react-yearly-calendar';
 import moment from 'moment';
 import './SearchResults.scss';
+import Loader from './Loader';
 
 class SearchResults extends Component {
   constructor(props) {
     super(props);
     this.state = {
       year: 2019,
-      pickedDate: '',
+      pickedDate: ''
     };
     this.handleCalendarClick = this.handleCalendarClick.bind(this);
     this.handleModalClick = this.handleModalClick.bind(this);
@@ -19,13 +20,19 @@ class SearchResults extends Component {
   }
 
   componentDidMount() {
-    const {
-      onInit,
-      match: { params }
-    } = this.props;
+    const { match: { params }, onInit } = this.props;
 
-    console.log('여기는 서치리져트', params.url);
     onInit(params.url);
+  }
+
+  componentDidUpdate() {
+    const { archivedDate, history, registeredUrl } = this.props;
+
+    if (registeredUrl) {
+      setTimeout(() => {
+        history.push(`/web/${registeredUrl}/${archivedDate}`);
+      }, 3000);
+    }
   }
 
   handleCalendarClick(pickedDate, formattedDates) {
@@ -37,10 +44,8 @@ class SearchResults extends Component {
   }
 
   handleModalClick(ev) {
-    if (
-      ev.target.classList.contains('SearchResults__modal') ||
-      ev.target.classList.contains('SearchResults__modal__close')
-    ) {
+    if (ev.target.classList.contains('SearchResults__modal') ||
+        ev.target.classList.contains('SearchResults__modal__close')) {
       this.setState({
         pickedDate: ''
       });
@@ -54,7 +59,7 @@ class SearchResults extends Component {
   }
 
   handleTimeClick(pickedTime) {
-    const { history, match: { params } } = this.props;
+    const { match: { params }, history } = this.props;
 
     history.push(`/web/${params.url}/${pickedTime}`);
   }
@@ -81,10 +86,9 @@ class SearchResults extends Component {
 
     return formattedDates.map((date, index) => {
       const formattedPickDate = moment(pickedDate).format('YYYY-MM-DD');
-      console.log(formattedPickDate, formattedDates);
 
       if (date === formattedPickDate) {
-        const archiveTime = datesOfArchives[index].date;
+        const archiveTime = datesOfArchives[index];
         const formattedArchiveTime = moment(archiveTime).format('lll');
 
         return (
@@ -100,11 +104,17 @@ class SearchResults extends Component {
   }
 
   render() {
-    const { year, pickedDate } = this.state;
-    const { requestUrl, datesOfArchives } = this.props;
+    const { pickedDate, year } = this.state;
+    const {
+      datesOfArchives,
+      isValidUrl,
+      loading,
+      registeredUrl,
+      requestUrl
+    } = this.props;
 
-    const formattedDates = datesOfArchives.map((archive) => {
-      return moment(archive.date).format('YYYY-MM-DD');
+    const formattedDates = datesOfArchives.map((date) => {
+      return moment(date).format('YYYY-MM-DD');
     });
 
     const customCSSclasses = {
@@ -116,43 +126,70 @@ class SearchResults extends Component {
         <div className="SearchResults__result">
           <span>{requestUrl}</span>
           saved
-          <span>{datesOfArchives.length}</span>
+          <span>{formattedDates.length}</span>
           times
         </div>
         <div className="SearchResults__contents">
-          <h2>Click the date you want </h2>
+          {!requestUrl && <span className="SearchResults__contents__loading">Loading...</span>}
           {requestUrl &&
-            (datesOfArchives.length ? (
+            isValidUrl &&
+            (formattedDates.length ? (
               <Fragment>
+                <h2 className="SearchResults__contents__info">
+                  Click the date of archive you want to take out from our library
+                </h2>
                 <CalendarControls
                   year={year}
                   onPrevYear={this.onPrevYear}
                   onNextYear={this.onNextYear}
                 />
-                <Calendar
-                  year={year}
-                  onPickDate={ev => this.handleCalendarClick(ev, formattedDates)}
-                  customClasses={customCSSclasses}
-                />
-              </Fragment>
-            ) : (
-              <Fragment>
-                <div className="SearchResults__contents__empty">
-                  <h2 className="SearchResults__contents__empty__title">
-                    There is no archive for&nbsp;
-                    <span>{requestUrl}</span>
-                  </h2>
-                  <span>Do your want to register this page?</span>
-                  <input
-                    type="button"
-                    value="register"
-                    className="SearchResults__contents__empty__register"
-                    onClick={this.handleRegisterClick}
+                <div className="SearchResults__contents__table">
+                  <Calendar
+                    year={year}
+                    customClasses={customCSSclasses}
+                    onPickDate={ev => this.handleCalendarClick(ev, formattedDates)}
                   />
                 </div>
               </Fragment>
+            ) : (
+              <div className="SearchResults__contents__empty">
+                {!registeredUrl ? (
+                  <Fragment>
+                    <h2 className="SearchResults__contents__empty__title">
+                      There is no archive for
+                      <br />
+                      <span>{requestUrl}</span>
+                    </h2>
+                    <p>Do your want to register this page?</p>
+                    <input
+                      type="button"
+                      value="register"
+                      className="SearchResults__contents__empty__register"
+                      onClick={this.handleRegisterClick}
+                    />
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <h2 className="SearchResults__contents__empty__title">
+                      Yeah~! We just register and archive
+                      <br />
+                      <span>{registeredUrl}</span>
+                    </h2>
+                    <p>Go to the page we just saved, after 5 seconds...</p>
+                  </Fragment>
+                )}
+              </div>
             ))}
-          {!requestUrl && <div>Loading</div>}
+          {requestUrl && !isValidUrl && (
+            <Fragment>
+              <h2 className="SearchResults__contents__invalid__title">
+                This URL is invalid.
+                <br />
+                <span>{requestUrl}</span>
+              </h2>
+              <p>Please check URL</p>
+            </Fragment>
+          )}
         </div>
         {pickedDate && (
           <div className="SearchResults__modal" onClick={this.handleModalClick}>
@@ -164,14 +201,15 @@ class SearchResults extends Component {
                 {this.renderDatesOfArchive(formattedDates)}
               </ul>
               <input
-                className="SearchResults__modal__close"
                 type="button"
                 value="&#10005;"
+                className="SearchResults__modal__close"
                 onClick={this.handleModalClick}
               />
             </div>
           </div>
         )}
+        {loading && <Loader />}
       </div>
     );
   }

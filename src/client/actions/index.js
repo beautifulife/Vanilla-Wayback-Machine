@@ -1,5 +1,10 @@
 import * as Types from './actionTypes';
 
+export const initLoader = () => ({
+  type: Types.INIT_LOADER,
+  loading: true
+});
+
 export const pickDate = pickedDate => ({
   type: Types.PICK_DATE,
   pickedDate
@@ -39,4 +44,9 @@ export const setWebPage = (requestUrl, pageSource) => ({
   type: Types.SET_WEB_PAGE,
   requestUrl,
   pageSource
+});
+
+export const terminateLoader = () => ({
+  type: Types.TERMINATE_LOADER,
+  loading: false
 });

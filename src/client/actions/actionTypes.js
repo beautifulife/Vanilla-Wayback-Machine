@@ -1,3 +1,4 @@
+export const INIT_LOADER = 'INIT_LOADER';
 export const PICK_DATE = 'PICK_DATE';
 export const REGISTER_URL = 'REGISTER_URL';
 export const RESET_ALL = 'RESET_ALL';
@@ -5,3 +6,4 @@ export const SEARCH_ARCHIVED_URL = 'SEARCH_ARCHIVED_URL';
 export const SEARCH_INITIAL_URL = 'SEARCH_INITIAL_URL';
 export const SEARCH_INVALID_URL = 'SEARCH_INVALID_URL';
 export const SET_WEB_PAGE = 'SET_WEB_PAGE';
+export const TERMINATE_LOADER = 'TERMINATE_LOADER';
